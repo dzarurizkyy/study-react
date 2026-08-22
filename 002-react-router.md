@@ -11,7 +11,7 @@ A practical reference guide for learning client-side routing in React — coveri
   - [Multi Page Application](#multi-page-application)
   - [Single Page Application](#single-page-application)
   - [Router Library](#router-library)
-  - [React Router](#react-router-1)
+  - [Why React Router](#why-react-router)
 - [Project Setup](#-project-setup)
   - [Creating the Project](#creating-the-project)
   - [Adding React Router](#adding-react-router)
@@ -31,6 +31,8 @@ A practical reference guide for learning client-side routing in React — coveri
   - [useNavigate](#usenavigate)
   - [useSearchParams](#usesearchparams)
   - [useLocation](#uselocation)
+- [Quick Reference](#-quick-reference)
+- [Best Practices](#-best-practices)
 
 ---
 
@@ -54,7 +56,7 @@ Instead of manually swapping page content, we can use a dedicated **Router Libra
 
 > Reference: [react.libhunt.com/libs/router/react](https://react.libhunt.com/libs/router/react)
 
-### React Router {#react-router-1}
+### Why React Router
 
 There are many router libraries available for React, but in this material we'll use one of the most popular ones: **React Router** — an open-source routing library that is currently very popular in the React ecosystem.
 
@@ -104,7 +106,7 @@ createRoot(document.getElementById('root')).render(
 
 ---
 
-## 🗺️ Routing Basics
+## 🔀 Routing Basics
 
 ### Routes & Route
 
@@ -159,7 +161,7 @@ createRoot(document.getElementById('root')).render(
 
 ---
 
-## 🖼️ Layouts with Outlet
+## 🪟 Layouts with Outlet
 
 Several pages in a web app often share the same layout — the same header and footer, but different content in between. This could be done with plain JSX using `children`, but React Router offers an easier way: create a `Route` whose element is used as a **Layout**, then nest child routes inside it. Instead of using the `children` prop, the layout renders an `<Outlet>` component where the matched child route should appear.
 
@@ -324,11 +326,11 @@ React Router provides a `<Link>` component as a replacement for the anchor eleme
 
 The `to` attribute of `<Link>` can also accept an object, with `pathname`, `search`, and `hash` attributes:
 
-| Attribute  | Purpose                  |
-|------------|---------------------------|
+| Attribute | Purpose |
+| --- | --- |
 | `pathname` | the target path location |
-| `search`   | the query parameters     |
-| `hash`     | the `#fragment`          |
+| `search` | the query parameters |
+| `hash` | the `#fragment` |
 
 ### NavLink
 
@@ -550,3 +552,44 @@ export default function DataLayout() {
     )
 }
 ```
+
+---
+
+## 🎯 Quick Reference
+
+| Concept | Purpose | Key Syntax |
+| --- | --- | --- |
+| **BrowserRouter** | Enables SPA-style routing at the app root | `<BrowserRouter><App /></BrowserRouter>` |
+| **Routes / Route** | Maps a URL path to a component | `<Route path="/about" element={<About />} />` |
+| **Nested Route** | Shares a path prefix with child routes | `<Route path="/data">...</Route>` |
+| **index Route** | Default child for a parent path | `<Route index element={<Data />} />` |
+| **Layout Route + Outlet** | Renders a shared layout around child routes | `<Route element={<Layout />}>...</Route>`, `<Outlet />` |
+| **Star Segment** | Matches any remaining path, including `/` | `<Route path="/images/*" />`, read via `useParams()['*']` |
+| **Not Found Route** | Catch-all for unmatched paths | `<Route path="*" element={<NotFound />} />` (declared last) |
+| **Link** | Client-side navigation without a full reload | `<Link to="/about">About</Link>` |
+| **NavLink** | Like `Link`, styles itself when active | `<NavLink to="/about">About</NavLink>` |
+| **useNavigate** | Navigate programmatically | `const navigate = useNavigate(); navigate('/data')` |
+| **useSearchParams** | Read/update query string params | `const [params] = useSearchParams(); params.get('search')` |
+| **useLocation** | Read the current path, query, and hash | `const location = useLocation()` |
+
+---
+
+## 💡 Best Practices
+
+**✅ Do This**
+
+- **Wrap the app root in a single `BrowserRouter`** — routing only works for components rendered inside it
+- **Use `<Link>` / `<NavLink>` instead of `<a>`** for in-app navigation, so the page never does a full reload
+- **Reach for a Layout Route + `<Outlet>`** when several pages share the same header/footer, instead of repeating that markup in every page component
+- **Give a parent an `index` route** whenever visiting its base path (e.g. `/data`) should render something by default
+- **Place the catch-all `path="*"` route last** in the route list, so it only matches paths nothing else handled
+- **Prefer `useNavigate()` for programmatic navigation** (e.g. after a form submits) over manually touching `window.location`
+
+**❌ Avoid This**
+
+- **Using a plain `<a>` tag for internal links** — it triggers a full page reload and defeats the point of an SPA
+- **Declaring the `path="*"` Not Found route before more specific routes** — it would swallow those paths since it matches everything
+- **Reading the URL with `window.location.href`** inside a component — `useLocation()` re-renders correctly on navigation, a manual read doesn't
+- **Forgetting a `key`/param when a star segment or dynamic path should identify different data** — `useParams()` is how that value reaches the component, not a hardcoded prop
+
+> Reference: [reactrouter.com](https://reactrouter.com/) · [api.reactrouter.com/v7](https://api.reactrouter.com/v7/)
