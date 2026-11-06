@@ -724,9 +724,6 @@ export default function DashboardLayout() {
 | PATCH | `/api/users/current` | ✅ | Update name and/or password |
 | DELETE | `/api/users/logout` | ✅ | Clear the token (logout) |
 
-<details>
-<summary>Request/response detail for each endpoint</summary>
-
 **Register** — `POST /api/users`
 
 ```json
@@ -779,8 +776,6 @@ export default function DashboardLayout() {
 ```json
 { "data": "OK" }
 ```
-
-</details>
 
 ---
 
